@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>TRY OUT TKA 3 FISIKA - SMAN 2 LUWU UTARA</title>
+<style>
+:root{--navy:#0b2d4d;--navy2:#123f66;--blue:#1f5f93;--pale:#eaf3fb;--line:#cbdbea;--green:#27a66f;--yellow:#e6ad22;--red:#d94b4b}
+*{box-sizing:border-box;-webkit-user-select:none;user-select:none}
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:linear-gradient(145deg,#eef5fb,#fff 50%,#e5f0f8);color:#16324b}
+.screen{display:none;min-height:100vh}.screen.active{display:flex;flex-direction:column}
+.header{background:linear-gradient(90deg,var(--navy),var(--blue));color:#fff;padding:18px;text-align:center;box-shadow:0 4px 18px #0b2d4d2b}
+.header h1{margin:0;font-size:22px;letter-spacing:.5px}.header p{margin:5px 0 0;font-size:12px;opacity:.9}
+.start-card,.result-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 8px 28px #0b2d4d18;max-width:520px;width:calc(100% - 30px);padding:28px;margin:auto}
+.form-group{margin:15px 0}label{display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px}
+input{width:100%;padding:13px;border:2px solid var(--line);border-radius:10px;font-size:15px;background:#f6faff;-webkit-user-select:text;user-select:text}
+.btn{border:0;border-radius:11px;padding:13px 18px;font-weight:800;cursor:pointer;width:100%}.primary{background:var(--navy);color:#fff}.secondary{background:var(--pale);color:var(--navy)}
+.info{background:var(--pale);border-left:4px solid var(--blue);padding:12px 14px;border-radius:8px;font-size:12px;line-height:1.6}
+.topbar{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,var(--navy),var(--blue));color:#fff;padding:10px 15px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pinfo{font-size:12px;line-height:1.45}.pinfo b{font-size:14px}.timer{padding:7px 14px;border-radius:10px;background:#ffffff1f;text-align:center;min-width:105px}.timer .t{font-size:21px;font-weight:900;font-variant-numeric:tabular-nums}.timer.warn{background:#b51f1f}
+.quiz-body{display:flex;gap:16px;max-width:1250px;width:100%;margin:auto;padding:16px}
+.nav{width:250px;flex:0 0 250px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 5px 18px #0b2d4d12;height:max-content;position:sticky;top:82px}
+.nav h3{margin:0 0 10px;color:var(--navy);font-size:14px}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.navbtn{aspect-ratio:1;border:0;border-radius:8px;background:var(--red);color:#fff;font-weight:800;cursor:pointer}.navbtn.done{background:var(--green)}.navbtn.current{outline:3px solid var(--navy)}
+.summary{font-size:11px;color:#64788b;line-height:1.8;margin:12px 0}
+.content{flex:1;min-width:0}.question-card{display:none;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 5px 18px #0b2d4d12}.question-card.active{display:block}
+.qhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px}.qhead span{background:var(--navy);color:#fff;padding:7px 12px;border-radius:18px;font-weight:900;font-size:13px}.qhead b{font-size:11px;color:var(--blue);background:var(--pale);padding:7px 10px;border-radius:16px}
+.source-wrap{background:#fff;border:1px solid #dbe7f1;border-radius:10px;padding:16px;overflow:hidden}
+.text-question{font-size:15px;line-height:1.6;color:#16324b;margin-bottom:15px}
+.text-question p{margin:0 0 10px}
+.options-list{list-style-type:none;padding:0;margin:0}
+.options-list li{margin-bottom:8px;padding:10px 14px;background:#f6faff;border:1px solid var(--line);border-radius:8px;font-size:14px}
+.answer-box{margin-top:14px;border-top:1px dashed var(--line);padding-top:14px}.answer-hint{font-size:12px;color:#667b8d;margin-bottom:8px}.choices{display:flex;gap:8px;flex-wrap:wrap}
+.choice{width:52px;height:44px;border:2px solid var(--line);background:#fff;color:var(--navy);border-radius:10px;font-weight:900;cursor:pointer}.choice:hover{border-color:var(--blue)}.choice.selected{background:var(--navy);color:#fff;border-color:var(--navy)}
+.bottom{display:flex;gap:8px;margin-top:16px}.bottom button{flex:1}
+.result-card{text-align:center}.result-card h2{color:var(--navy);margin:0 0 4px}
+.score-big{font-size:64px;font-weight:900;color:var(--blue);margin:10px 0 0;line-height:1}
+.score-sub{font-size:13px;color:#667b8d;margin-bottom:14px}
+.stats{display:flex;gap:8px;margin:14px 0}.stats div{flex:1;background:var(--pale);border-radius:10px;padding:10px;font-size:12px}.stats b{display:block;font-size:20px;color:var(--navy)}
+@media(max-width:800px){.quiz-body{flex-direction:column}.nav{width:100%;position:static;flex-basis:auto}.grid{grid-template-columns:repeat(10,1fr)}}
+@media(max-width:520px){.header h1{font-size:18px}.quiz-body{padding:9px}.question-card{padding:12px}.choice{width:46px;height:40px}}
+</style>
+</head>
+<body ondragstart="return false" oncontextmenu="return false">
+<section id="start" class="screen active">
+ <div class="header"><h1>TRY OUT TKA 3 FISIKA</h1><p>SMAN 2 LUWU UTARA • Bank Soal TKA Fisika SMA/MA/SMK 2026</p></div>
+ <div style="flex:1;display:flex;padding:22px 0"><div class="start-card">
+  <h2 style="color:var(--navy);margin-top:0">Formulir Data Peserta</h2>
+  <p style="font-size:13px;color:#6d7f90">Isi data sebelum memulai ujian.</p>
+  <div class="form-group"><label>NAMA LENGKAP</label><input id="nama" autocomplete="off"></div>
+  <div class="form-group"><label>NISN</label><input id="nisn" autocomplete="off" inputmode="numeric"></div>
+  <div class="info"><b>Ketentuan Ujian:</b><br>• Jumlah Soal: 30 Nomor Pilihan Ganda.<br>• Alokasi Waktu: 90 Menit.<br>• Pilihlah salah satu opsi jawaban (A, B, C, D, atau E) yang paling tepat.<br>• Gunakan panel navigasi untuk berpindah antar soal.<br>• Sertifikat nilai dapat diunduh setelah jawaban dikirim.</div>
+  <button class="btn primary" style="margin-top:18px" onclick="mulai()">🚀 MULAI TRY OUT</button>
+ </div></div>
+</section>
+
+<section id="quiz" class="screen">
+ <div class="topbar"><div class="pinfo"><b id="tb-nama">-</b><br>NISN: <span id="tb-nisn">-</span> • SMAN 2 LUWU UTARA</div><div id="timerBox" class="timer"><small>SISA WAKTU</small><div class="t" id="timer">90:00</div></div></div>
+ <div class="quiz-body">
+  <aside class="nav">
+   <h3>NAVIGASI SOAL</h3>
+   <div class="grid" id="navgrid"></div>
+   <div class="summary">Terjawab: <b id="answered">0</b>/30<br>Belum dijawab: <b id="remain">30</b></div>
+   <button class="btn" style="background:#d94b4b;color:#fff" onclick="submit()">📤 KIRIM JAWABAN</button>
+  </aside>
+
+  <main class="content">
+   <div id="qnum" style="font-weight:900;color:var(--navy);margin:0 0 8px 4px">SOAL 1/30</div>
+   <div id="qlist"></div>
+  </main>
+ </div>
+</section>
+
+<section id="result" class="screen">
+ <div class="header"><h1>HASIL TRY OUT TKA 3 FISIKA</h1><p>SMAN 2 LUWU UTARA</p></div>
+ <div style="flex:1;display:flex;padding:22px 0"><div class="result-card">
+  <h2 id="r-nama">-</h2>
+  <div class="score-sub">NISN: <span id="r-nisn">-</span></div>
+  <div class="score-sub">NILAI AKHIR</div>
+  <div class="score-big" id="r-score">0</div>
+  <div class="stats"><div><b id="r-benar">0</b>Benar</div><div><b id="r-salah">0</b>Salah</div><div><b id="r-kosong">0</b>Kosong</div></div>
+  <button class="btn primary" onclick="downloadCert()">🎓 UNDUH SERTIFIKAT NILAI</button>
+ </div></div>
+</section>
+
+<script>
+/* ===== BANK SOAL: TRY OUT TKA 3 FISIKA (30 soal) ===== */
+const Q = [
+{t:"BESARAN DAN PENGUKURAN",q:"Seorang siswa mengukur diameter sebuah tabung dengan jangka sorong berketelitian 0,1 mm. Skala utama menunjukkan 2,4 cm, sedangkan garis skala nonius yang berimpit dengan skala utama adalah garis ke-6. Hasil pengukuran diameter tabung tersebut adalah...",o:["2,40 cm","2,43 cm","2,46 cm","2,64 cm","2,66 cm"],a:"C"},
+{t:"KINEMATIKA GERAK LURUS",q:"Sebuah mobil bergerak dengan kecepatan 20 m/s. Pengemudi menginjak rem sehingga mobil mengalami perlambatan tetap 4 m/s² hingga berhenti. Jarak yang ditempuh mobil sejak pengereman sampai berhenti adalah...",o:["50 m","40 m","60 m","80 m","100 m"],a:"A"},
+{t:"GERAK PARABOLA",q:"Sebuah peluru ditembakkan dari tanah datar dengan kecepatan awal 50 m/s dan sudut elevasi 53° (sin 53° = 0,8; cos 53° = 0,6). Jika g = 10 m/s² dan hambatan udara diabaikan, jarak mendatar maksimum (jangkauan) peluru tersebut adalah...",o:["120 m","160 m","200 m","220 m","240 m"],a:"E"},
+{t:"GERAK MELINGKAR",q:"Sebuah benda bermassa 0,5 kg diikat pada tali sepanjang 1 m, lalu diputar pada bidang horizontal yang licin dengan laju tetap 4 m/s. Besar tegangan tali pada benda tersebut adalah...",o:["4 N","8 N","16 N","24 N","32 N"],a:"B"},
+{t:"HUKUM NEWTON",q:"Seorang bermassa 60 kg berdiri di atas timbangan di dalam lift yang bergerak naik dengan percepatan 2 m/s². Jika g = 10 m/s², gaya normal yang ditunjukkan timbangan adalah...",o:["480 N","600 N","660 N","720 N","840 N"],a:"D"},
+{t:"USAHA DAN ENERGI",q:"Sebuah mobil bermassa 1.000 kg dipercepat dari kecepatan 10 m/s menjadi 20 m/s. Usaha total yang dilakukan oleh gaya penggerak mobil adalah...",o:["100 kJ","150 kJ","200 kJ","250 kJ","300 kJ"],a:"B"},
+{t:"MOMENTUM DAN TUMBUKAN",q:"Benda A bermassa 2 kg bergerak dengan kecepatan 6 m/s menumbuk benda B bermassa 4 kg yang diam. Setelah tumbukan, kedua benda menyatu dan bergerak bersama (tumbukan tidak lenting sama sekali). Kecepatan kedua benda setelah tumbukan adalah...",o:["2 m/s","3 m/s","4 m/s","5 m/s","6 m/s"],a:"A"},
+{t:"IMPULS",q:"Sebuah bola bermassa 0,5 kg bergerak ke kanan dengan kecepatan 10 m/s. Setelah dipukul, bola bergerak ke kiri dengan kecepatan 6 m/s. Besar impuls yang diberikan pemukul pada bola adalah...",o:["2 N.s","3 N.s","5 N.s","6 N.s","8 N.s"],a:"E"},
+{t:"DINAMIKA ROTASI",q:"Sebuah cakram pejal bermassa 4 kg dan berjari-jari 0,5 m dapat berputar terhadap sumbu tetap yang melalui pusatnya (I = ½MR²). Jika pada cakram bekerja momen gaya konstan 2 N.m, percepatan sudut cakram adalah...",o:["1 rad/s²","2 rad/s²","4 rad/s²","8 rad/s²","16 rad/s²"],a:"C"},
+{t:"KESETIMBANGAN BENDA TEGAR",q:"Dua anak bermain jungkat-jungkit yang massanya diabaikan dan ditumpu tepat di tengah. Anak pertama bermassa 30 kg duduk 2 m dari titik tumpu. Agar jungkat-jungkit setimbang, anak kedua bermassa 40 kg harus duduk pada jarak ... dari titik tumpu di sisi seberang.",o:["0,75 m","1,0 m","1,2 m","1,5 m","2,0 m"],a:"D"},
+{t:"FLUIDA STATIS (TEKANAN HIDROSTATIS)",q:"Seorang penyelam berada pada kedalaman 20 m di bawah permukaan laut. Jika tekanan atmosfer 1 × 10⁵ Pa, massa jenis air laut 1.000 kg/m³, dan g = 10 m/s², tekanan total yang dialami penyelam adalah...",o:["2 × 10⁵ Pa","3 × 10⁵ Pa","4 × 10⁵ Pa","5 × 10⁵ Pa","2 × 10⁶ Pa"],a:"B"},
+{t:"FLUIDA STATIS (HUKUM ARCHIMEDES)",q:"Sebuah benda ditimbang di udara menunjukkan berat 30 N, sedangkan ketika seluruhnya dicelupkan ke dalam air beratnya menjadi 20 N. Jika massa jenis air 1.000 kg/m³ dan g = 10 m/s², massa jenis benda tersebut adalah...",o:["1.000 kg/m³","1.500 kg/m³","2.000 kg/m³","3.000 kg/m³","4.000 kg/m³"],a:"D"},
+{t:"FLUIDA DINAMIS",q:"Sebuah tangki besar berisi air terbuka di bagian atasnya. Pada dinding tangki terdapat lubang kecil yang berada 1,8 m di bawah permukaan air. Jika g = 10 m/s², kecepatan semburan air dari lubang tersebut adalah...",o:["6 m/s","9 m/s","12 m/s","18 m/s","36 m/s"],a:"A"},
+{t:"SUHU DAN KALOR",q:"Sebanyak 500 gram air dipanaskan dari suhu 20°C hingga 60°C. Jika kalor jenis air 4.200 J/kg°C, kalor yang diperlukan adalah...",o:["21 kJ","42 kJ","84 kJ","105 kJ","126 kJ"],a:"C"},
+{t:"TEORI KINETIK GAS",q:"Gas ideal dalam ruang tertutup bervolume tetap memiliki tekanan 2 atm pada suhu 27°C. Jika gas dipanaskan hingga suhu 627°C, tekanan gas menjadi...",o:["2 atm","3 atm","4 atm","5 atm","6 atm"],a:"E"},
+{t:"TERMODINAMIKA (MESIN CARNOT)",q:"Sebuah mesin Carnot memiliki efisiensi 40% dengan suhu reservoir tinggi 500 K. Agar efisiensinya naik menjadi 50% dengan suhu reservoir rendah tetap, suhu reservoir tinggi harus dinaikkan menjadi...",o:["550 K","600 K","650 K","700 K","750 K"],a:"B"},
+{t:"GELOMBANG MEKANIK",q:"Persamaan simpangan gelombang berjalan dinyatakan y = 0,05 sin (4πt + πx) dengan x dan y dalam meter dan t dalam sekon. Gelombang tersebut merambat dengan kecepatan...",o:["0,25 m/s searah sumbu x positif","0,25 m/s searah sumbu x negatif","4 m/s searah sumbu x negatif","4 m/s searah sumbu x positif","2 m/s searah sumbu x negatif"],a:"C"},
+{t:"GELOMBANG BUNYI (TARAF INTENSITAS)",q:"Taraf intensitas bunyi sebuah mesin adalah 60 dB. Jika 100 mesin identik dibunyikan secara bersamaan pada tempat yang sama, taraf intensitas bunyi totalnya adalah... (log 2 = 0,3)",o:["80 dB","100 dB","120 dB","160 dB","200 dB"],a:"A"},
+{t:"OPTIKA GEOMETRI (LENSA)",q:"Sebuah benda diletakkan 30 cm di depan lensa cembung yang berjarak fokus 20 cm. Jarak bayangan dan perbesaran bayangan yang terbentuk berturut-turut adalah...",o:["12 cm dan 0,4 kali","30 cm dan 1 kali","50 cm dan 1,67 kali","60 cm dan 2 kali","60 cm dan 3 kali"],a:"D"},
+{t:"ALAT OPTIK (TELESKOP)",q:"Sebuah teleskop bintang memiliki lensa objektif dengan jarak fokus 100 cm dan lensa okuler dengan jarak fokus 5 cm. Jika pengamat melihat bintang dengan mata tak berakomodasi, panjang teleskop dan perbesaran sudutnya berturut-turut adalah...",o:["95 cm dan 20 kali","95 cm dan 5 kali","100 cm dan 20 kali","105 cm dan 5 kali","105 cm dan 20 kali"],a:"E"},
+{t:"LISTRIK STATIS (HUKUM COULOMB)",q:"Dua muatan titik q₁ = 2 µC dan q₂ = 4 µC terpisah pada jarak 3 cm di udara. Jika k = 9 × 10⁹ N.m²/C², besar gaya Coulomb yang bekerja pada kedua muatan adalah...",o:["40 N","80 N","120 N","160 N","240 N"],a:"B"},
+{t:"KAPASITOR",q:"Kapasitor C₁ = 6 µF dan C₂ = 3 µF disusun seri kemudian dihubungkan dengan sumber tegangan 12 V. Energi total yang tersimpan dalam kedua kapasitor adalah...",o:["144 µJ","216 µJ","288 µJ","432 µJ","648 µJ"],a:"A"},
+{t:"LISTRIK DINAMIS (HUKUM KIRCHHOFF)",q:"Dua baterai 12 V dan 6 V dipasang dalam satu loop dengan polaritas saling berlawanan bersama dua hambatan 3 Ω dan 3 Ω yang tersusun seri. Jika hambatan dalam baterai diabaikan, kuat arus yang mengalir dalam rangkaian adalah...",o:["0,5 A","0,75 A","1,0 A","2,0 A","3,0 A"],a:"C"},
+{t:"MEDAN MAGNET",q:"Kawat lurus panjang dialiri arus listrik 5 A. Jika μ₀ = 4π × 10⁻⁷ Wb/A.m, besar induksi magnetik pada titik yang berjarak 10 cm dari kawat adalah...",o:["1 × 10⁻⁷ T","5 × 10⁻⁷ T","1 × 10⁻⁶ T","1 × 10⁻⁵ T","5 × 10⁻⁵ T"],a:"D"},
+{t:"INDUKSI ELEKTROMAGNETIK (TRANSFORMATOR)",q:"Sebuah transformator ideal memiliki 1.100 lilitan primer dan 110 lilitan sekunder. Kumparan primer dihubungkan dengan tegangan 220 V, sedangkan kumparan sekunder dihubungkan dengan hambatan 11 Ω. Kuat arus pada kumparan sekunder adalah...",o:["0,02 A","0,2 A","1,0 A","1,5 A","2,0 A"],a:"E"},
+{t:"RANGKAIAN ARUS BOLAK-BALIK",q:"Rangkaian seri R-L-C memiliki hambatan R = 60 Ω, reaktansi induktif X_L = 100 Ω, dan reaktansi kapasitif X_C = 20 Ω. Impedansi rangkaian tersebut adalah...",o:["80 Ω","100 Ω","140 Ω","160 Ω","180 Ω"],a:"B"},
+{t:"RELATIVITAS KHUSUS",q:"Sebuah pesawat bergerak dengan kecepatan 0,8c terhadap bumi. Menurut pengamat di pesawat, sebuah proses berlangsung selama 6 sekon. Selang waktu proses tersebut menurut pengamat di bumi adalah...",o:["3,6 sekon","6 sekon","10 sekon","12 sekon","16 sekon"],a:"C"},
+{t:"EFEK FOTOLISTRIK",q:"Fungsi kerja suatu logam adalah 2,0 eV. Logam tersebut disinari cahaya yang energi fotonnya 3,5 eV. Besar potensial penghenti yang diperlukan agar elektron foto tepat tidak mencapai anoda adalah...",o:["1,5 V","2,0 V","2,5 V","3,5 V","5,5 V"],a:"A"},
+{t:"FISIKA INTI (PELURUHAN)",q:"Sebuah sampel zat radioaktif bermassa awal 64 gram. Setelah 30 hari, massa zat radioaktif yang tersisa adalah 2 gram. Waktu paruh zat radioaktif tersebut adalah...",o:["3 hari","4 hari","5 hari","6 hari","10 hari"],a:"D"},
+{t:"GELOMBANG ELEKTROMAGNETIK",q:"Urutan spektrum gelombang elektromagnetik berdasarkan frekuensi dari yang terkecil ke yang terbesar adalah...",o:["Sinar-X, ultraviolet, cahaya tampak, inframerah, gelombang radio","Gelombang radio, ultraviolet, cahaya tampak, inframerah, sinar-X","Inframerah, gelombang radio, cahaya tampak, ultraviolet, sinar-X","Gelombang radio, inframerah, ultraviolet, cahaya tampak, sinar-X","Gelombang radio, inframerah, cahaya tampak, ultraviolet, sinar-X"],a:"E"}
+];
+const N = Q.length;
+const L = ["A","B","C","D","E"];
+let answers = {};
+let sisa = 90 * 60;
+let timerId = null;
+let peserta = {nama:"", nisn:""};
+let hasil = null;
+
+/* ===== Render soal & navigasi (tampilan sama seperti sebelumnya) ===== */
+(function build(){
+  let nav = "", list = "";
+  Q.forEach((d,i)=>{
+    const n = i+1;
+    nav += `<button class="navbtn" id="nav${n}" onclick="goTo(${n})">${n}</button>`;
+    list += `<section class="question-card" id="q${n}" data-q="${n}">
+    <div class="qhead"><span>SOAL ${n}/${N}</span><b>${d.t}</b></div>
+    <div class="source-wrap"><div class="text-question"><p>${d.q}</p>
+    <ul class="options-list">${d.o.map((x,k)=>`<li><b>${L[k]}.</b> ${x}</li>`).join("")}</ul></div></div>
+    <div class="answer-box"><div class="answer-hint">Pilih Jawaban Soal Nomor ${n}:</div>
+    <div class="choices">${L.map(c=>`<button class="choice" onclick="selectChoice(${n}, '${c}')">${c}</button>`).join("")}</div></div>
+    </section>`;
+  });
+  document.getElementById("navgrid").innerHTML = nav;
+  document.getElementById("qlist").innerHTML = list;
+})();
+
+function mulai() {
+  const nama = document.getElementById('nama').value.trim();
+  const nisn = document.getElementById('nisn').value.trim();
+  if (!nama || !nisn) { alert('Harap isi Nama dan NISN terlebih dahulu!'); return; }
+  peserta = {nama, nisn};
+  document.getElementById('tb-nama').innerText = nama;
+  document.getElementById('tb-nisn').innerText = nisn;
+  document.getElementById('start').classList.remove('active');
+  document.getElementById('quiz').classList.add('active');
+  goTo(1);
+  startTimer();
+}
+function startTimer(){
+  renderTimer();
+  timerId = setInterval(()=>{
+    sisa--;
+    renderTimer();
+    if (sisa <= 0) {
+      clearInterval(timerId);
+      alert('Waktu habis! Jawaban Anda dikirim otomatis.');
+      selesai();
+    }
+  }, 1000);
+}
+function renderTimer(){
+  const m = String(Math.floor(sisa/60)).padStart(2,'0');
+  const s = String(sisa%60).padStart(2,'0');
+  document.getElementById('timer').innerText = `${m}:${s}`;
+  document.getElementById('timerBox').classList.toggle('warn', sisa <= 600);
+}
+function goTo(n) {
+  document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.navbtn').forEach(b => b.classList.remove('current'));
+  const card = document.getElementById('q' + n);
+  if (card) card.classList.add('active');
+  const btn = document.getElementById('nav' + n);
+  if (btn) btn.classList.add('current');
+  document.getElementById('qnum').innerText = `SOAL ${n}/${N}`;
+}
+function selectChoice(q, val) {
+  answers[q] = val;
+  const card = document.getElementById('q' + q);
+  if (card) {
+    card.querySelectorAll('.choice').forEach(b => {
+      b.classList.toggle('selected', b.innerText === val);
+    });
+  }
+  const btn = document.getElementById('nav' + q);
+  if (btn) btn.classList.add('done');
+  updateSummary();
+}
+function updateSummary() {
+  const count = Object.keys(answers).length;
+  document.getElementById('answered').innerText = count;
+  document.getElementById('remain').innerText = N - count;
+}
+function submit() {
+  const count = Object.keys(answers).length;
+  if (confirm(`Anda telah menjawab ${count} dari ${N} soal. Yakin ingin mengirim jawaban?`)) {
+    selesai();
+  }
+}
+
+/* ===== Penilaian & hasil ===== */
+function selesai(){
+  if (timerId) clearInterval(timerId);
+  let benar = 0, kosong = 0;
+  Q.forEach((d,i)=>{
+    const a = answers[i+1];
+    if (!a) kosong++; else if (a === d.a) benar++;
+  });
+  const salah = N - benar - kosong;
+  const nilai = Math.round((benar / N) * 100 * 10) / 10;
+  hasil = {benar, salah, kosong, nilai};
+  document.getElementById('r-nama').innerText = peserta.nama;
+  document.getElementById('r-nisn').innerText = peserta.nisn;
+  document.getElementById('r-score').innerText = nilai;
+  document.getElementById('r-benar').innerText = benar;
+  document.getElementById('r-salah').innerText = salah;
+  document.getElementById('r-kosong').innerText = kosong;
+  document.getElementById('quiz').classList.remove('active');
+  document.getElementById('result').classList.add('active');
+  window.scrollTo(0,0);
+  alert('Jawaban Try Out berhasil dikirim!');
+}
+
+/* ===== Sertifikat nilai (PNG) ===== */
+function downloadCert(){
+  if (!hasil) return;
+  const W = 1600, H = 1130;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d');
+  const g = x.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,'#f4f9fe'); g.addColorStop(1,'#e3eef8');
+  x.fillStyle = g; x.fillRect(0,0,W,H);
+  x.strokeStyle = '#0b2d4d'; x.lineWidth = 14; x.strokeRect(40,40,W-80,H-80);
+  x.strokeStyle = '#e6ad22'; x.lineWidth = 4; x.strokeRect(65,65,W-130,H-130);
+  x.fillStyle = '#0b2d4d'; x.fillRect(65,65,W-130,150);
+  x.textAlign = 'center';
+  x.fillStyle = '#fff'; x.font = 'bold 54px Georgia, serif';
+  x.fillText('SERTIFIKAT HASIL TRY OUT', W/2, 140);
+  x.font = '28px Arial'; x.fillText('SMAN 2 LUWU UTARA', W/2, 190);
+  x.fillStyle = '#16324b'; x.font = '30px Arial';
+  x.fillText('Diberikan kepada:', W/2, 320);
+  let fs = 84; x.font = `bold ${fs}px Georgia, serif`;
+  while (x.measureText(peserta.nama).width > W-300 && fs > 30) { fs -= 4; x.font = `bold ${fs}px Georgia, serif`; }
+  x.fillStyle = '#0b2d4d'; x.fillText(peserta.nama, W/2, 430);
+  x.strokeStyle = '#e6ad22'; x.lineWidth = 3;
+  x.beginPath(); x.moveTo(300,455); x.lineTo(W-300,455); x.stroke();
+  x.fillStyle = '#16324b'; x.font = '30px Arial';
+  x.fillText('NISN: ' + peserta.nisn, W/2, 510);
+  x.fillText('telah mengikuti dan menyelesaikan', W/2, 580);
+  x.font = 'bold 46px Arial'; x.fillStyle = '#1f5f93';
+  x.fillText('TRY OUT TKA 3 FISIKA', W/2, 645);
+  x.fillStyle = '#16324b'; x.font = '28px Arial';
+  x.fillText('dengan perolehan nilai:', W/2, 705);
+  x.fillStyle = '#0b2d4d'; x.font = 'bold 130px Georgia, serif';
+  x.fillText(String(hasil.nilai), W/2, 840);
+  x.fillStyle = '#16324b'; x.font = '28px Arial';
+  x.fillText(`Benar: ${hasil.benar}   •   Salah: ${hasil.salah}   •   Kosong: ${hasil.kosong}   •   Jumlah Soal: ${N}`, W/2, 905);
+  const tgl = new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+  x.font = '24px Arial'; x.fillStyle = '#64788b';
+  x.fillText('Diterbitkan pada ' + tgl, W/2, 990);
+  x.font = 'italic 22px Arial';
+  x.fillText('Sertifikat ini dihasilkan otomatis oleh sistem Try Out TKA Fisika SMAN 2 Luwu Utara.', W/2, 1030);
+  const a = document.createElement('a');
+  a.download = 'Sertifikat_TryOut_TKA3_Fisika_' + peserta.nama.replace(/\s+/g,'_') + '.png';
+  a.href = c.toDataURL('image/png');
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+</script>
+</body>
+</html>
